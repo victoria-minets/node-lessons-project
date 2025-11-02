@@ -3,15 +3,19 @@ import express from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
 import 'dotenv/config';
+import helmet from 'helmet';
 
 const app = express();
 // Використовуємо значення з .env або дефолтний порт 3000
 const PORT = process.env.PORT ?? 3000;
 
 // Middleware
-app.use(express.json()); // Middleware для парсингу JSON у body запиту
 
 app.use(cors()); // Дозволяє запити з будь-яких джерел
+
+app.use(helmet()); // для безпеки від шкідливих запитів - дуже рекомендовано
+
+app.use(express.json()); // Middleware для парсингу JSON у body запиту
 
 // Логування HTTP-запитів
 app.use(
