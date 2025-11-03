@@ -2,12 +2,12 @@
 import express from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
-import 'dotenv/config';
+import 'dotenv/config'; // запускає скрипт, який витягує змінні з .env в корені додатка. розширений варіант dotenv.config ({шлях}) - якщо десь в іншому місці треба брати змінні оточення
 import helmet from 'helmet';
 
 const app = express();
 // Використовуємо значення з .env або дефолтний порт 3000
-const PORT = process.env.PORT ?? 3000;
+const PORT = process.env.PORT ?? 3000; // process глобальна змінна (як window в js)
 
 // Middleware
 
