@@ -5,6 +5,9 @@ import 'dotenv/config'; // запускає скрипт, який витягу�
 import cors from 'cors';
 import helmet from 'helmet';
 
+// Імпортуємо middleware
+import { errors } from 'celebrate';
+
 import { connectMongoDB } from './db/connectMongoDB.js';
 import { logger } from './middleware/logger.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
@@ -26,7 +29,8 @@ app.use(studentsRoutes);
 
 // 404 — якщо маршрут не знайдено
 app.use(notFoundHandler);
-
+// обробка помилок від celebrate (валідація)
+app.use(errors());
 // Error — якщо під час запиту виникла помилка
 app.use(errorHandler);
 
