@@ -65,7 +65,10 @@ export const getStudents = async (req, res) => {
 
   const skip = (page - 1) * perPage;
 
-  const studentsQuery = Student.find();
+  // const studentsQuery = Student.find();
+
+  // Додаємо критерій пошуку тільки студентів поточного користувача
+  const studentsQuery = Student.find({ userId: req.user._id });
 
   // Фільтрація
   if (gender) {
@@ -100,19 +103,26 @@ export const getStudents = async (req, res) => {
 
 export const getStudentById = async (req, res, next) => {
   const { studentId } = req.params;
-  const student = await Student.findById(studentId);
+
+  const student = await Student.findOne({
+    _id: studentId,
+    userId: req.user._id,
+  });
 
   if (!student) {
-    next(createHttpError(404, 'Student not found'));
-    return;
+    return next(createHttpError(404, 'Student not found'));
   }
 
   res.status(200).json(student);
 };
 
-// Новий контролер
 export const createStudent = async (req, res) => {
-  const student = await Student.create(req.body);
+  const student = await Student.create({
+    ...req.body,
+    // Додаємо властивість userId
+    userId: req.user._id,
+  });
+
   res.status(201).json(student);
 };
 
@@ -120,6 +130,8 @@ export const deleteStudent = async (req, res, next) => {
   const { studentId } = req.params;
   const student = await Student.findOneAndDelete({
     _id: studentId,
+    // Критерій пошуку по userId
+    userId: req.user._id,
   });
 
   if (!student) {
@@ -127,16 +139,17 @@ export const deleteStudent = async (req, res, next) => {
     return;
   }
 
-  res.status(200).json(student);
+  res.status(200).send(student);
 };
 
 export const updateStudent = async (req, res, next) => {
   const { studentId } = req.params;
 
   const student = await Student.findOneAndUpdate(
-    { _id: studentId }, // Шукаємо по id
+    // Критерій пошуку по userId
+    { _id: studentId, userId: req.user._id },
     req.body,
-    { new: true }, // повертаємо оновлений документ
+    { new: true },
   );
 
   if (!student) {

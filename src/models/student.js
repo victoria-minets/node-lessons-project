@@ -1,7 +1,6 @@
 // src/models/student.js
 
-import { Schema } from 'mongoose';
-import { model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 
 const studentSchema = new Schema(
   {
@@ -26,6 +25,12 @@ const studentSchema = new Schema(
     onDuty: {
       type: Boolean,
       default: false,
+    },
+    // Нова властивість
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
     },
   },
   {
